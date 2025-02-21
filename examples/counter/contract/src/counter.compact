@@ -1,0 +1,23 @@
+pragma language_version >= 0.14.0;
+
+import CompactStandardLibrary;
+
+// public state
+export ledger round: Counter;
+
+// transition function changing public state
+export circuit increment(): [] {
+  round.increment(1);
+}
+
+export circuit mint(nonce: Bytes<32>, recipient: ZswapCoinPublicKey): [] {
+  const token = mint_token(
+    "Test                            ",
+    100000000,
+    nonce,
+    right<ZswapCoinPublicKey, ContractAddress>(kernel.self())
+  );
+  send_immediate(
+    token, left<ZswapCoinPublicKey, ContractAddress>(recipient), 100000000
+  );
+}
