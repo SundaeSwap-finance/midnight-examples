@@ -14,7 +14,7 @@ let logger: Logger;
  * This seed gives access to tokens minted in the genesis block of a local development node - only
  * used in standalone networks to build a wallet with initial funds.
  */
-const GENESIS_MINT_WALLET_SEED = '0000000000000000000000000000000000000000000000000000000000000042';
+const GENESIS_MINT_WALLET_SEED = '0000000000000000000000000000000000000000000000000000000000000001';
 
 const DEPLOY_OR_JOIN_QUESTION = `
 You can do one of the following:
@@ -80,7 +80,7 @@ const mainLoop = async (providers: CounterProviders, rli: Interface): Promise<vo
 };
 
 const buildWalletFromSeed = async (config: Config, rli: Interface): Promise<Wallet & Resource> => {
-  const seed = '63277a7655ae180059d829d7c9eea48044c5d351781a620e5f5a2bfd07609a43';
+  const seed = await rli.question('Enter your wallet seed: ');
   return await api.buildWalletAndWaitForFunds(config, seed, '');
 };
 

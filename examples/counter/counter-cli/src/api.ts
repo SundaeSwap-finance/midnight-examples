@@ -96,9 +96,8 @@ export const mint = async (
 ): Promise<{ blockHeight: number; txHash: string }> => {
   logger.info('Minting...');
   await new Promise((resolve) => setTimeout(resolve, 2000)); // timeout needed due to bug PM-12428
-  const tx = await counterContract.callTx.mint(randomBytes(32), {
-    bytes: Uint8Array.from(fromHex(providers.walletProvider.coinPublicKey)),
-  });
+
+  const tx = await counterContract.callTx.mint(randomBytes(32), { bytes: Uint8Array.from(fromHex(providers.walletProvider.coinPublicKey)) });
   const { txHash, blockHeight } = tx.public;
   logger.info(`Transaction ${txHash} added in block ${blockHeight}`);
   return { txHash, blockHeight };

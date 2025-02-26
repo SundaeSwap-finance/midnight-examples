@@ -13,7 +13,11 @@
   "scripts": {
     "compact": "turbo run compact",
     "build": "turbo run build",
+    "test": "turbo run test",
+    "test-e2e": "turbo run test-e2e",
     "lint": "turbo run lint",
+    "check": "turbo run check --ignore packages/dao-ui-tests",
+    "dao-dapp": "turbo run start --filter=dao-dapp",
     "welcome-participant-ui": "turbo run start --filter=welcome-participant-ui",
     "welcome-organizer-cli": "turbo run start --filter=welcome-organizer-cli",
     "welcome-organizer-ui": "turbo run start --filter=welcome-organizer-ui",

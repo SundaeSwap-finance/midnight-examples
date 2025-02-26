@@ -1,4 +1,5 @@
 pragma language_version >= 0.14.0;
+export { Either, ZswapCoinPublicKey, ContractAddress };
 
 import CompactStandardLibrary;
 
