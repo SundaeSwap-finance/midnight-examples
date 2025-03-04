@@ -12,13 +12,10 @@ export circuit increment(): [] {
 }
 
 export circuit mint(nonce: Bytes<32>, recipient: ZswapCoinPublicKey): [] {
-  const token = mint_token(
-    "Test                            ",
+  mint_token(
+    pad(32, "Test"),
     100000000,
     nonce,
-    right<ZswapCoinPublicKey, ContractAddress>(kernel.self())
-  );
-  send_immediate(
-    token, left<ZswapCoinPublicKey, ContractAddress>(recipient), 100000000
+    left<ZswapCoinPublicKey, ContractAddress>(recipient)
   );
 }
