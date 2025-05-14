@@ -83,7 +83,6 @@ export const increment = async (
   counterContract: DeployedCounterContract,
 ): Promise<{ blockHeight: number; txHash: string }> => {
   logger.info('Incrementing...');
-  await new Promise((resolve) => setTimeout(resolve, 2000)); // timeout needed due to bug PM-12428
   const tx = await counterContract.callTx.increment();
   const { txHash, blockHeight } = tx.public;
   logger.info(`Transaction ${txHash} added in block ${blockHeight}`);
@@ -95,9 +94,10 @@ export const mint = async (
   counterContract: DeployedCounterContract,
 ): Promise<{ blockHeight: number; txHash: string }> => {
   logger.info('Minting...');
-  await new Promise((resolve) => setTimeout(resolve, 2000)); // timeout needed due to bug PM-12428
 
-  const tx = await counterContract.callTx.mint(randomBytes(32), { bytes: Uint8Array.from(fromHex(providers.walletProvider.coinPublicKey)) });
+  const tx = await counterContract.callTx.mint(randomBytes(32), {
+    bytes: midnightLedger.encodeCoinPublicKey(providers.walletProvider.coinPublicKey),
+  });
   const { txHash, blockHeight } = tx.public;
   logger.info(`Transaction ${txHash} added in block ${blockHeight}`);
   return { txHash, blockHeight };
@@ -122,10 +122,12 @@ export const createWalletAndMidnightProvider = async (wallet: Wallet): Promise<W
   return {
     coinPublicKey: state.coinPublicKey,
     balanceTx(tx: UnbalancedTransaction, newCoins: CoinInfo[]): Promise<BalancedTransaction> {
-      return wallet
-        .balanceTransaction(
-          zswap.Transaction.deserialize(tx.serialize(getLedgerNetworkId()), getZswapNetworkId()),
-          newCoins,
+      return waitForSync(wallet)
+        .then(() =>
+          wallet.balanceTransaction(
+            zswap.Transaction.deserialize(tx.serialize(getLedgerNetworkId()), getZswapNetworkId()),
+            newCoins,
+          ),
         )
         .then((balanced) => wallet.proveTransaction(balanced))
         .then((zswapTx) =>
